@@ -168,9 +168,15 @@ footer{text-align:center;font-size:13px;padding-bottom:20px;color:var(--maroon)}
     <div class="sub" id="pScope"></div>
     <div class="winners" id="pWin"></div>
     <div class="sub">Wishing you a joyous Dusserah &amp; Bathukamma!<br>शुभ विजयादशमी · బతుకమ్మ శుభాకాంక్షలు</div>
-    <br><button class="btn" id="closePop">Close</button>
+    <br><button class="btn" id="nextBtn">Next</button> <button class="btn" id="allBtn">All</button> <button class="btn" id="closePop">Close</button>
   </div>
 </div>
+<div class="overlay hide" id="pinOv"><div class="popup" style="max-width:340px">
+  <h3 style="font-size:26px">🔒 Admin Login</h3>
+  <input type="password" id="pinIn" placeholder="Enter PIN" autocomplete="off" style="width:100%;text-align:center;margin:10px 0">
+  <div id="pinErr" class="hint" style="color:#b00;min-height:18px"></div>
+  <button class="btn" id="pinOk">Login</button> <button class="btn" id="pinCancel">Cancel</button>
+</div></div>
 <canvas id="fx"></canvas>
 
 <script>
@@ -226,38 +232,63 @@ function rnd(n){const a=new Uint32Array(1);const lim=Math.floor(2**32/n)*n;do cr
 function pick(arr,k){const a=[...arr],out=[];while(out.length<k&&a.length)out.push(a.splice(rnd(a.length),1)[0]);return out}
 const show=f=>f.replace("-"," · ");
 
-// ---- draw ----
-$("#drawBtn").onclick=async()=>{
-  if(busy)return; const p=pool();
-  if(!p.length)return alert("No eligible flats for this draw.");
-  const k=Math.min(count,p.length); if(k<count&&!confirm(`Only ${p.length} eligible flat(s). Continue with ${k}?`))return;
-  busy=true;$("#drawBtn").disabled=true;
-  const winners=pick(p,k);
-  $("#slots").innerHTML=winners.map(()=>`<div class="slot">---</div>`).join("");
-  const slots=$$("#slots .slot");
-  for(let i=0;i<k;i++){
-    const end=Date.now()+(i===0?2500:1400);
-    while(Date.now()<end){slots[i].textContent=show(p[rnd(p.length)]);await new Promise(r=>setTimeout(r,70));}
-    slots[i].textContent=show(winners[i]);
+// ---- draw (one winner at a time) ----
+let sess=null;
+const MODES={tower:"Tower Wise",community:"Community",physical:"Physical"};
+function resetSess(){sess=null;btnLabel()}
+function btnLabel(){$("#drawBtn").textContent=sess&&sess.done.length<sess.k?`▶ DRAW WINNER ${sess.done.length+1} OF ${sess.k}`:"🎉 DRAW WINNERS 🎉"}
+async function spin(slot,p,ms){const end=Date.now()+ms;while(Date.now()<end){slot.textContent=show(p[rnd(p.length)]);await new Promise(r=>setTimeout(r,70));}}
+function record(w){
+  const rec={time:new Date().toLocaleString(),mode:MODES[mode],scope:scopeLabel(),winners:[w]};
+  history.push(rec);store.set("history",history);sess.done.push(w);
+  log({action:"DRAW",mode:rec.mode,scope:rec.scope,count:sess.k,winners:w,pool:sess.poolSize});
+}
+function popup(){
+  const left=sess.k-sess.done.length;
+  $("#pScope").textContent=`${scopeLabel()} · Winner${sess.done.length>1?"s":""} ${sess.done.length} of ${sess.k}`;
+  $("#pWin").innerHTML=sess.done.map(w=>{const [t,f]=w.split("-");return `<div class="win">${f}<small>Tower ${t}</small></div>`}).join("");
+  $("#nextBtn").classList.toggle("hide",!left);$("#allBtn").classList.toggle("hide",left<2);
+  $("#nextBtn").textContent=`▶ Proceed to Winner ${sess.done.length+1}`;
+  $("#allBtn").textContent=`⚡ Reveal Remaining ${left} Together`;
+  $("#closePop").textContent=left?"Pause":"Close";
+  $("#ov").classList.remove("hide");confetti();btnLabel();
+}
+async function drawStep(all){
+  if(busy)return;
+  if(!sess||sess.done.length>=sess.k){
+    const p=pool();if(!p.length)return alert("No eligible flats for this draw.");
+    const k=Math.min(count,p.length);if(k<count&&!confirm(`Only ${p.length} eligible flat(s). Continue with ${k}?`))return;
+    sess={k,done:[],poolSize:p.length};$("#slots").innerHTML="";
   }
-  const rec={time:new Date().toLocaleString(),mode:{tower:"Tower Wise",community:"Community",physical:"Physical"}[mode],scope:scopeLabel(),winners};
-  history.push(rec);store.set("history",history);
-  log({action:"DRAW",mode:rec.mode,scope:rec.scope,count:k,winners:winners.join(", "),pool:p.length});
-  $("#pScope").textContent=`${scopeLabel()} · ${k} Winner${k>1?"s":""}`;
-  $("#pWin").innerHTML=winners.map(w=>{const [t,f]=w.split("-");return `<div class="win">${f}<small>Tower ${t}</small></div>`}).join("");
-  $("#ov").classList.remove("hide"); confetti();
+  busy=true;$("#drawBtn").disabled=true;$("#ov").classList.add("hide");
+  const n=all?sess.k-sess.done.length:1;
+  for(let i=0;i<n;i++){
+    const p=pool().filter(f=>!sess.done.includes(f));
+    if(!p.length){alert("No more eligible flats.");sess.k=sess.done.length;break}
+    const w=pick(p,1)[0];
+    const slot=document.createElement("div");slot.className="slot";$("#slots").appendChild(slot);
+    await spin(slot,p,all?1200:2800);slot.textContent=show(w);record(w);
+  }
   busy=false;$("#drawBtn").disabled=false;refresh();
-};
+  if(sess.done.length)popup();else resetSess();
+}
+$("#drawBtn").onclick=()=>drawStep(false);
+$("#nextBtn").onclick=()=>drawStep(false);
+$("#allBtn").onclick=()=>drawStep(true);
 $("#closePop").onclick=()=>$("#ov").classList.add("hide");
 
 // ---- UI wiring ----
-$$(".mode").forEach(el=>el.onclick=()=>{mode=el.dataset.m;$$(".mode").forEach(x=>x.classList.toggle("active",x===el));refresh()});
-$$(".chip").forEach(el=>el.onclick=()=>{count=+el.textContent;$$(".chip").forEach(x=>x.classList.toggle("active",x===el))});
-["tower","noRepeat","hoOnly"].forEach(id=>$("#"+id).onchange=refresh);
+$$(".mode").forEach(el=>el.onclick=()=>{resetSess();mode=el.dataset.m;$$(".mode").forEach(x=>x.classList.toggle("active",x===el));refresh()});
+$$(".chip").forEach(el=>el.onclick=()=>{resetSess();count=+el.textContent;$$(".chip").forEach(x=>x.classList.toggle("active",x===el))});
+["tower","noRepeat","hoOnly"].forEach(id=>$("#"+id).onchange=()=>{resetSess();refresh()});
+function openAdmin(){$("#admin").classList.remove("hide");$("#adminBtn").textContent="🔓 Close Admin Panel";}
 $("#adminBtn").onclick=()=>{
-  if($("#admin").classList.contains("hide")){if(prompt("Enter admin PIN")!==ADMIN_PIN)return;$("#admin").classList.remove("hide");$("#adminBtn").textContent="🔓 Close Admin Panel";}
+  if($("#admin").classList.contains("hide")){$("#pinIn").value="";$("#pinErr").textContent="";$("#pinOv").classList.remove("hide");$("#pinIn").focus();}
   else{$("#admin").classList.add("hide");$("#adminBtn").textContent="🔒 Admin Panel";}
 };
+function tryPin(){if($("#pinIn").value===ADMIN_PIN){$("#pinOv").classList.add("hide");openAdmin();}else{$("#pinErr").textContent="Incorrect PIN";$("#pinIn").value="";}}
+$("#pinOk").onclick=tryPin;$("#pinIn").onkeydown=e=>{if(e.key==="Enter")tryPin();if(e.key==="Escape")$("#pinOv").classList.add("hide")};
+$("#pinCancel").onclick=()=>$("#pinOv").classList.add("hide");
 $$(".tab").forEach(t=>t.onclick=()=>{$$(".tab").forEach(x=>x.classList.toggle("active",x===t));$$(".tp").forEach(p=>p.classList.toggle("hide",p.id!==t.dataset.t))});
 
 function saveHanded(text){const r=parseFlats(text);handed=r.list;store.set("handed",handed);
