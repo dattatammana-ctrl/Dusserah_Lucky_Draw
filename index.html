@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lucky Draw – OnCloud33</title>
+<link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Mukta:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--maroon:#6b0f1a;--red:#a4161a;--saffron:#ff9f1c;--gold:#f4c430;--cream:#fff6e0;--green:#2e7d32}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Mukta',sans-serif;color:var(--maroon);min-height:100vh;
+background:radial-gradient(circle at 20% 10%,#ffe9b0 0,transparent 40%),radial-gradient(circle at 80% 90%,#ffd48a 0,transparent 40%),var(--cream);
+background-attachment:fixed}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;
+background-image:radial-gradient(circle,var(--maroon) 2px,transparent 3px),radial-gradient(circle,var(--maroon) 2px,transparent 3px);
+background-size:36px 36px;background-position:0 0,18px 18px}
+.toran{height:46px;background:
+radial-gradient(circle at 50% 0,transparent 0 0),
+repeating-linear-gradient(90deg,var(--saffron) 0 40px,var(--green) 40px 80px);
+clip-path:polygon(0 0,100% 0,100% 30%,97.5% 100%,95% 30%,92.5% 100%,90% 30%,87.5% 100%,85% 30%,82.5% 100%,80% 30%,77.5% 100%,75% 30%,72.5% 100%,70% 30%,67.5% 100%,65% 30%,62.5% 100%,60% 30%,57.5% 100%,55% 30%,52.5% 100%,50% 30%,47.5% 100%,45% 30%,42.5% 100%,40% 30%,37.5% 100%,35% 30%,32.5% 100%,30% 30%,27.5% 100%,25% 30%,22.5% 100%,20% 30%,17.5% 100%,15% 30%,12.5% 100%,10% 30%,7.5% 100%,5% 30%,2.5% 100%,0 30%)}
+header{text-align:center;padding:10px 16px 0;position:relative}
+.om{font-size:34px;color:var(--red)}
+h1{font-family:'Yatra One',serif;font-size:clamp(20px,3.4vw,34px);margin:4px 0;color:var(--red);text-shadow:1px 1px 0 var(--gold)}
+.event{display:inline-block;margin:8px 0 4px;padding:6px 40px;font-family:'Yatra One';font-size:clamp(24px,4vw,42px);color:#fff;
+background:linear-gradient(90deg,var(--maroon),var(--red),var(--maroon));border:3px solid var(--gold);border-radius:8px;
+box-shadow:0 0 0 4px var(--maroon),0 6px 16px #0003}
+.divider{font-size:22px;letter-spacing:10px;color:var(--saffron)}
+main{max-width:1000px;margin:14px auto 40px;padding:0 14px;position:relative}
+.card{background:#fffdf5;border:3px solid var(--maroon);border-radius:14px;padding:18px;margin-bottom:16px;position:relative;
+outline:2px dashed var(--gold);outline-offset:-9px;box-shadow:0 6px 18px #6b0f1a30}
+.card h2{font-family:'Yatra One';margin:0 0 12px;font-size:22px;color:var(--red)}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.mode{cursor:pointer;text-align:center;padding:14px 8px;border:2px solid var(--gold);border-radius:12px;background:#fff;font-weight:700;transition:.2s}
+.mode small{display:block;font-weight:400;font-size:12px;opacity:.8}
+.mode .ic{font-size:28px;display:block}
+.mode.active{background:linear-gradient(135deg,var(--saffron),var(--gold));border-color:var(--maroon);transform:translateY(-2px);box-shadow:0 4px 10px #0003}
+.row{display:flex;flex-wrap:wrap;gap:16px;align-items:end;margin-top:14px}
+label{font-weight:700;font-size:14px;display:block;margin-bottom:4px}
+select,input[type=text],input[type=password],textarea{padding:9px 10px;border:2px solid var(--maroon);border-radius:8px;font:inherit;background:#fff;min-width:150px}
+textarea{width:100%;min-height:80px}
+.chips{display:flex;gap:6px}
+.chip{width:44px;height:44px;border-radius:50%;border:2px solid var(--maroon);background:#fff;font-weight:700;font-size:18px;cursor:pointer}
+.chip.active{background:var(--red);color:#fff;border-color:var(--gold);box-shadow:0 0 0 2px var(--maroon)}
+button.btn{font-family:'Yatra One';font-size:15px;cursor:pointer;padding:9px 18px;border-radius:8px;border:2px solid var(--maroon);background:#fff;color:var(--maroon)}
+button.btn:hover{background:var(--gold)}
+button.go{width:100%;margin-top:18px;font-size:26px;padding:14px;color:#fff;background:linear-gradient(180deg,var(--red),var(--maroon));border:3px solid var(--gold);border-radius:12px;box-shadow:0 5px 0 #3d0910;letter-spacing:2px}
+button.go:hover{filter:brightness(1.15);background:linear-gradient(180deg,var(--red),var(--maroon))}
+button.go:disabled{opacity:.6;cursor:wait}
+.hint{font-size:13px;opacity:.85;margin:6px 0 0}
+.stage{text-align:center}
+.slots{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;min-height:80px}
+.slot{min-width:150px;padding:12px 16px;background:var(--maroon);color:var(--gold);border:3px solid var(--gold);border-radius:10px;font-family:'Yatra One';font-size:30px}
+.hide{display:none!important}
+.hist{width:100%;border-collapse:collapse;font-size:14px}
+.hist th{background:var(--maroon);color:var(--gold);padding:6px;text-align:left}
+.hist td{padding:6px;border-bottom:1px solid #e8d9a8}
+.stat{font-size:13px;background:#fff1c9;border-radius:6px;padding:4px 10px;display:inline-block;margin-top:8px}
+/* admin */
+.adminbar{text-align:right;margin-bottom:8px}
+.tabs{display:flex;gap:8px;margin-bottom:10px}
+.tab{padding:6px 14px;border:2px solid var(--maroon);border-radius:8px;cursor:pointer;font-weight:700;background:#fff}
+.tab.active{background:var(--gold)}
+.pflats{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.pf{background:var(--saffron);border-radius:16px;padding:2px 10px;font-weight:700;font-size:14px}
+.pf b{cursor:pointer;margin-left:6px;color:var(--maroon)}
+/* popup */
+.overlay{position:fixed;inset:0;background:#2a0409d9;display:flex;align-items:center;justify-content:center;z-index:50;padding:14px}
+.popup{background:var(--cream);border:6px double var(--gold);outline:5px solid var(--maroon);border-radius:18px;max-width:640px;width:100%;text-align:center;padding:26px 20px;animation:pop .6s cubic-bezier(.2,1.6,.4,1);position:relative;max-height:92vh;overflow:auto}
+@keyframes pop{from{transform:scale(.2) rotate(-8deg);opacity:0}to{transform:none;opacity:1}}
+.popup h3{font-family:'Yatra One';font-size:clamp(26px,5vw,42px);margin:4px 0;color:var(--red)}
+.popup .sub{font-size:18px;font-weight:600}
+.winners{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin:18px 0}
+.win{background:linear-gradient(135deg,var(--maroon),var(--red));color:var(--gold);border:3px solid var(--gold);border-radius:14px;padding:14px 24px;font-family:'Yatra One';font-size:clamp(34px,7vw,56px);animation:glow 1.4s infinite alternate}
+.win small{display:block;font-family:'Mukta';font-size:13px;color:#fff}
+@keyframes glow{to{box-shadow:0 0 28px var(--saffron)}}
+.diya{font-size:40px;animation:flick 1s infinite alternate}
+@keyframes flick{to{transform:scale(1.15) rotate(4deg)}}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
+footer{text-align:center;font-size:13px;padding-bottom:20px;color:var(--maroon)}
+@media(max-width:600px){.modes{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="toran"></div>
+<header>
+  <div class="om">ॐ</div>
+  <h1>OnCloud33 – Dusserah Navaratri &amp; Bathukamma Celebrations</h1>
+  <div class="event">🪔 Lucky Draw 🪔</div>
+  <div class="divider">❁ ✿ ❁ ✿ ❁</div>
+</header>
+
+<main>
+  <div class="adminbar"><span class="stat" id="syncStat" style="margin:0 8px 0 0"></span><button class="btn" id="adminBtn">🔒 Admin Panel</button></div>
+
+  <!-- Admin -->
+  <section class="card hide" id="admin">
+    <h2>⚙ Admin Panel</h2>
+    <div class="tabs">
+      <div class="tab active" data-t="t-hand">Handed-Over Flats</div>
+      <div class="tab" data-t="t-phys">Physically Present</div>
+      <div class="tab" data-t="t-hist">Draw History</div>
+    </div>
+
+    <div id="t-hand" class="tp">
+      <p class="hint">Paste flats (one per line, e.g. <b>4-1205</b>, <b>T3 12A07</b>) or load a Google Sheet. For the sheet: <i>File → Share → Publish to web → CSV</i>, then paste the link.</p>
+      <textarea id="handText" placeholder="4-101&#10;4-1205&#10;3-12A07"></textarea>
+      <div class="row">
+        <button class="btn" id="handSave">Save Handed-Over List</button>
+        <input type="text" id="sheetUrl" placeholder="Published Google Sheet CSV URL" style="flex:1">
+        <button class="btn" id="sheetLoad">Load from Sheet</button>
+        <button class="btn" id="handClear">Clear</button>
+      </div>
+      <span class="stat" id="handStat"></span>
+    </div>
+
+    <div id="t-phys" class="tp hide">
+      <p class="hint">Add flats of residents present at the venue here, or list them in a tab named <b>Physical</b> in the Google Sheet and import. Only these are eligible in “Physically Available” mode.</p>
+      <div class="row" style="margin-top:0">
+        <div><label>Tower</label><select id="pTower"><option>3</option><option>4</option><option>5</option></select></div>
+        <div><label>Flat number</label><input type="text" id="pFlat" placeholder="e.g. 1205 or 12A07"></div>
+        <button class="btn" id="pAdd">+ Add</button>
+        <button class="btn" id="pClear">Clear All</button>
+      </div>
+      <textarea id="pBulk" style="margin-top:10px;min-height:50px" placeholder="Or paste many: 4-101, 3-1205, 5-12A07"></textarea>
+      <button class="btn" id="pBulkAdd" style="margin-top:6px">Add Pasted List</button>
+      <button class="btn" id="pSheet" style="margin-top:6px">⬇ Import from Google Sheet ("Physical" tab)</button>
+      <div class="pflats" id="pList"></div>
+    </div>
+
+    <div id="t-hist" class="tp hide">
+      <table class="hist"><thead><tr><th>Time</th><th>Mode</th><th>Scope</th><th>Winners</th></tr></thead><tbody id="histBody"></tbody></table>
+      <div class="row"><button class="btn" id="histCsv">Download CSV</button></div>
+    </div>
+  </section>
+
+  <!-- Draw setup -->
+  <section class="card">
+    <h2>1. Choose Draw Type</h2>
+    <div class="modes">
+      <div class="mode active" data-m="tower"><span class="ic">🏢</span>Tower Wise<small>Winners from selected tower</small></div>
+      <div class="mode" data-m="community"><span class="ic">🏘</span>Community<small>All handed-over flats</small></div>
+      <div class="mode" data-m="physical"><span class="ic">🙏</span>Physically Available<small>Flats present at venue</small></div>
+    </div>
+
+    <div class="row">
+      <div id="towerBox"><label>Tower</label>
+        <select id="tower"><option value="3">Tower 3</option><option value="4">Tower 4</option><option value="5">Tower 5</option></select></div>
+      <div><label>Number of Winners</label>
+        <div class="chips" id="chips"><button class="chip active">1</button><button class="chip">2</button><button class="chip">3</button><button class="chip">4</button></div></div>
+      <div><label><input type="checkbox" id="noRepeat" checked> Exclude previous winners</label>
+        <label id="hoBox"><input type="checkbox" id="hoOnly"> Tower draw: handed-over flats only</label></div>
+    </div>
+    <span class="stat" id="poolStat"></span>
+    <button class="btn go" id="drawBtn">🎉 DRAW WINNERS 🎉</button>
+  </section>
+
+  <section class="card stage">
+    <h2>🪔 Draw Stage 🪔</h2>
+    <div class="slots" id="slots"><div class="slot">— — —</div></div>
+  </section>
+</main>
+<footer>❁ Happy Dusserah &amp; Bathukamma ❁ · OnCloud33</footer>
+
+<div class="overlay hide" id="ov">
+  <div class="popup">
+    <div class="diya">🪔 ❁ 🪔</div>
+    <h3>🎊 Congratulations! 🎊</h3>
+    <div class="sub" id="pScope"></div>
+    <div class="winners" id="pWin"></div>
+    <div class="sub">Wishing you a joyous Dusserah &amp; Bathukamma!<br>शुभ विजयादशमी · బతుకమ్మ శుభాకాంక్షలు</div>
+    <br><button class="btn" id="closePop">Close</button>
+  </div>
+</div>
+<canvas id="fx"></canvas>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const ADMIN_PIN="Dusserah2026";
+const API="https://script.google.com/macros/s/AKfycbwSryC-r-kp-ePPEKCglKYKrKJ6DbfuDw7RohbKGUX4fArmS4-KglSNQ68uj356fBY/exec";
+const FLATS_PER_TOWER={3:18,4:19,5:18};
+const FLOORS=[...Array(33)].map((_,i)=>i+1).map(f=>f===13?"12A":String(f)); // 13th floor = 12A
+const pad=n=>String(n).padStart(2,"0");
+
+// ---- flat universe ----
+function towerFlats(t){const out=[];for(const f of FLOORS)for(let n=1;n<=FLATS_PER_TOWER[t];n++){if(n===13)continue;out.push(`${t}-${f}${pad(n)}`);}return out;}
+const ALL={3:towerFlats(3),4:towerFlats(4),5:towerFlats(5)};
+const VALID=new Set(Object.values(ALL).flat());
+
+// ---- storage ----
+const store={get:(k,d)=>{try{return JSON.parse(localStorage.getItem("ld_"+k))??d}catch{return d}},set:(k,v)=>{try{localStorage.setItem("ld_"+k,JSON.stringify(v))}catch{}}};
+let handed=store.get("handed",[]), physical=store.get("physical",[]), history=store.get("history",[]);
+let mode="tower", count=1, busy=false;
+
+function parseFlats(text){
+  const found=new Set(), bad=[];
+  const re=/(?:T(?:ower)?\s*)?([345])\s*[-\s,:\/]\s*(\d{1,2}A?\d{2})\b/gi;
+  let m; const lines=text.split(/\r?\n/).map(l=>l.replace(/^\s*"?([345])"?\s*[,\t]\s*"?(\d{1,2}A?\d{2})"?\s*$/i,"$1-$2"));
+  lines.forEach(l=>{re.lastIndex=0;let any=false;while((m=re.exec(l))){any=true;const k=`${m[1]}-${m[2].toUpperCase()}`;VALID.has(k)?found.add(k):bad.push(k);}});
+  return {list:[...found],bad};
+}
+function normFlat(t,f){f=f.trim().toUpperCase();return `${t}-${f}`}
+
+// ---- pool ----
+const prevWinners=()=>new Set(history.flatMap(h=>h.winners));
+function pool(){
+  let p;
+  if(mode==="tower"){const t=$("#tower").value;p=ALL[t];if($("#hoOnly").checked)p=p.filter(f=>handed.includes(f));}
+  else if(mode==="community")p=handed;
+  else p=physical;
+  if($("#noRepeat").checked){const w=prevWinners();p=p.filter(f=>!w.has(f));}
+  return p;
+}
+function scopeLabel(){return mode==="tower"?`Tower ${$("#tower").value}`:mode==="community"?"Community (Handed-Over Flats)":"Physically Available Residents"}
+function refresh(){
+  $("#towerBox").classList.toggle("hide",mode!=="tower");
+  $("#hoBox").classList.toggle("hide",mode!=="tower");
+  const n=pool().length;
+  $("#poolStat").textContent=`Eligible flats in this draw: ${n}`+(mode==="community"&&!handed.length?" — upload handed-over list in Admin Panel":"");
+  $("#handStat").textContent=`Handed-over flats loaded: ${handed.length}`;
+  $("#pList").innerHTML=physical.map(f=>`<span class="pf">${f}<b data-f="${f}">×</b></span>`).join("")||"<i>No flats added yet</i>";
+  $("#histBody").innerHTML=history.slice().reverse().map(h=>`<tr><td>${h.time}</td><td>${h.mode}</td><td>${h.scope}</td><td><b>${h.winners.join(", ")}</b></td></tr>`).join("");
+}
+
+// ---- random (crypto) ----
+function rnd(n){const a=new Uint32Array(1);const lim=Math.floor(2**32/n)*n;do crypto.getRandomValues(a);while(a[0]>=lim);return a[0]%n}
+function pick(arr,k){const a=[...arr],out=[];while(out.length<k&&a.length)out.push(a.splice(rnd(a.length),1)[0]);return out}
+const show=f=>f.replace("-"," · ");
+
+// ---- draw ----
+$("#drawBtn").onclick=async()=>{
+  if(busy)return; const p=pool();
+  if(!p.length)return alert("No eligible flats for this draw.");
+  const k=Math.min(count,p.length); if(k<count&&!confirm(`Only ${p.length} eligible flat(s). Continue with ${k}?`))return;
+  busy=true;$("#drawBtn").disabled=true;
+  const winners=pick(p,k);
+  $("#slots").innerHTML=winners.map(()=>`<div class="slot">---</div>`).join("");
+  const slots=$$("#slots .slot");
+  for(let i=0;i<k;i++){
+    const end=Date.now()+(i===0?2500:1400);
+    while(Date.now()<end){slots[i].textContent=show(p[rnd(p.length)]);await new Promise(r=>setTimeout(r,70));}
+    slots[i].textContent=show(winners[i]);
+  }
+  const rec={time:new Date().toLocaleString(),mode:{tower:"Tower Wise",community:"Community",physical:"Physical"}[mode],scope:scopeLabel(),winners};
+  history.push(rec);store.set("history",history);
+  log({action:"DRAW",mode:rec.mode,scope:rec.scope,count:k,winners:winners.join(", "),pool:p.length});
+  $("#pScope").textContent=`${scopeLabel()} · ${k} Winner${k>1?"s":""}`;
+  $("#pWin").innerHTML=winners.map(w=>{const [t,f]=w.split("-");return `<div class="win">${f}<small>Tower ${t}</small></div>`}).join("");
+  $("#ov").classList.remove("hide"); confetti();
+  busy=false;$("#drawBtn").disabled=false;refresh();
+};
+$("#closePop").onclick=()=>$("#ov").classList.add("hide");
+
+// ---- UI wiring ----
+$$(".mode").forEach(el=>el.onclick=()=>{mode=el.dataset.m;$$(".mode").forEach(x=>x.classList.toggle("active",x===el));refresh()});
+$$(".chip").forEach(el=>el.onclick=()=>{count=+el.textContent;$$(".chip").forEach(x=>x.classList.toggle("active",x===el))});
+["tower","noRepeat","hoOnly"].forEach(id=>$("#"+id).onchange=refresh);
+$("#adminBtn").onclick=()=>{
+  if($("#admin").classList.contains("hide")){if(prompt("Enter admin PIN")!==ADMIN_PIN)return;$("#admin").classList.remove("hide");$("#adminBtn").textContent="🔓 Close Admin Panel";}
+  else{$("#admin").classList.add("hide");$("#adminBtn").textContent="🔒 Admin Panel";}
+};
+$$(".tab").forEach(t=>t.onclick=()=>{$$(".tab").forEach(x=>x.classList.toggle("active",x===t));$$(".tp").forEach(p=>p.classList.toggle("hide",p.id!==t.dataset.t))});
+
+function saveHanded(text){const r=parseFlats(text);handed=r.list;store.set("handed",handed);
+  $("#handText").value=handed.join("\n");refresh();
+  if(r.bad.length)alert(`Ignored ${r.bad.length} invalid flat(s): ${r.bad.slice(0,15).join(", ")}`);}
+$("#handSave").onclick=()=>saveHanded($("#handText").value);
+$("#handClear").onclick=()=>{if(confirm("Clear handed-over list?")){handed=[];store.set("handed",[]);$("#handText").value="";refresh()}};
+$("#sheetLoad").onclick=async()=>{if(API)return loadRemote(true);
+  try{let u=$("#sheetUrl").value.trim();const m=u.match(/\/spreadsheets\/d\/([\w-]+)/);
+    if(m&&!/output=csv|tqx=out:csv/.test(u)){const g=u.match(/[#&?]gid=(\d+)/);u=`https://docs.google.com/spreadsheets/d/${m[1]}/gviz/tq?tqx=out:csv${g?"&gid="+g[1]:""}`;}
+    const r=await fetch(u);if(!r.ok)throw 0;const txt=await r.text();if(/<html/i.test(txt.slice(0,300)))throw 0;
+    saveHanded(txt);store.set("sheet",$("#sheetUrl").value.trim());}
+  catch{alert("Could not load the sheet. Make sure it is published to the web as CSV.")}
+};
+$("#sheetUrl").value=store.get("sheet","https://docs.google.com/spreadsheets/d/1P0suYaWvVg3LSr8_D4CWKZyvwLtbNtqxzgZqtVE179U/edit?usp=sharing");
+$("#handText").value=handed.join("\n");
+
+function addPhys(list){let added=0;list.forEach(f=>{if(VALID.has(f)){if(!physical.includes(f)){physical.push(f);added++;log({action:"PHYS_ADD",flat:f})}}else alert("Invalid flat: "+f)});store.set("physical",physical);refresh();return added}
+$("#pAdd").onclick=()=>{const f=normFlat($("#pTower").value,$("#pFlat").value);if(addPhys([f])||physical.includes(f))$("#pFlat").value="";$("#pFlat").focus()};
+$("#pFlat").onkeydown=e=>{if(e.key==="Enter")$("#pAdd").click()};
+$("#pBulkAdd").onclick=()=>{const r=parseFlats($("#pBulk").value);addPhys(r.list);$("#pBulk").value="";if(r.bad.length)alert("Ignored invalid: "+r.bad.join(", "))};
+$("#pSheet").onclick=async()=>{
+  try{let txt;
+    if(API){const j=await (await fetch(API+"?data=1")).json();if(!j.ok)throw 0;txt=j.physSheet;if(txt==null)return alert('No tab named "Physical" found in the Google Sheet.');}
+    else{const m=$("#sheetUrl").value.match(/\/spreadsheets\/d\/([\w-]+)/);if(!m)throw 0;
+      txt=await (await fetch(`https://docs.google.com/spreadsheets/d/${m[1]}/gviz/tq?tqx=out:csv&sheet=Physical`)).text();if(/<html/i.test(txt.slice(0,300)))throw 0;}
+    const r=parseFlats(txt),n=addPhys(r.list);
+    alert(`Imported ${n} new flat(s) from the Physical tab (${r.list.length-n} already present).`+(r.bad.length?`\nIgnored invalid: ${r.bad.slice(0,15).join(", ")}`:""));
+  }catch{alert('Could not read the "Physical" tab. Check sharing and that the tab exists.')}
+};
+$("#pClear").onclick=()=>{if(confirm("Clear all present flats?")){physical=[];store.set("physical",[]);log({action:"PHYS_CLEAR"});refresh()}};
+$("#pList").onclick=e=>{const f=e.target.dataset?.f;if(f){physical=physical.filter(x=>x!==f);store.set("physical",physical);log({action:"PHYS_REMOVE",flat:f});refresh()}};
+$("#histCsv").onclick=()=>{const csv="Time,Mode,Scope,Winners\n"+history.map(h=>`"${h.time}","${h.mode}","${h.scope}","${h.winners.join(" | ")}"`).join("\n");
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="lucky-draw-results.csv";a.click()};
+
+// ---- confetti ----
+function confetti(){
+  const c=$("#fx"),x=c.getContext("2d");c.width=innerWidth;c.height=innerHeight;
+  const cols=["#ff9f1c","#f4c430","#a4161a","#2e7d32","#fff","#e85d04"];
+  const ps=[...Array(220)].map(()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,r:4+Math.random()*6,c:cols[rnd(cols.length)],vy:2+Math.random()*4,vx:-2+Math.random()*4,a:Math.random()*6}));
+  let t=0;(function f(){x.clearRect(0,0,c.width,c.height);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.a+=.1;x.fillStyle=p.c;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillRect(-p.r,-p.r/2,p.r*2,p.r);x.restore()});
+  if(++t<300)requestAnimationFrame(f);else x.clearRect(0,0,c.width,c.height)})();
+}
+// ---- Google Sheet audit sync ----
+let queue=store.get("queue",[]), flushing=false;
+function setSync(){$("#syncStat").textContent=!API?"⚠ Sheet not connected – records on this device only":queue.length?`⚠ ${queue.length} record(s) pending upload`:"✔ Records saved to Google Sheet"}
+function log(e){e.id=Date.now().toString(36)+Math.random().toString(36).slice(2,7);e.time=new Date().toISOString();queue.push(e);store.set("queue",queue);flush()}
+async function flush(){
+  if(!API||flushing)return setSync(); flushing=true;
+  while(queue.length){
+    try{const r=await fetch(API,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({pin:ADMIN_PIN,...queue[0]})});
+      if(!(await r.json()).ok)throw 0; queue.shift(); store.set("queue",queue);}catch{break}
+  }
+  flushing=false;setSync();
+}
+async function loadRemote(manual){
+  if(!API)return;
+  await flush(); if(queue.length)return;
+  try{const j=await (await fetch(API+"?data=1")).json(); if(!j.ok)throw 0;
+    handed=parseFlats(j.handed).list;physical=j.physical.filter(f=>VALID.has(f));
+    history=j.draws;store.set("handed",handed);store.set("physical",physical);store.set("history",history);
+    $("#handText").value=handed.join("\n");refresh();if(manual)alert(`Loaded ${handed.length} handed-over flats from Google Sheet.`);
+  }catch{if(manual)alert("Could not reach Google Sheet. Check the Apps Script URL / deployment access.")}
+}
+refresh();setSync();loadRemote();
+</script>
+</body>
+</html>
